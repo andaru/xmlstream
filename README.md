@@ -1,3 +1,5 @@
+![travis-ci](https://travis-ci.org/andaru/xmlstream.svg?branch=master)
+
 # xmlstream #
 
 The `xmlstream` package provides Golang libraries for building event
