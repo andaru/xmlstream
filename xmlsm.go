@@ -11,8 +11,6 @@ type StateMachine struct {
 	Begin StateFn
 	End   StateFn
 	Error error
-
-	state StateFn
 }
 
 type StateFn func(context.Context, *StateMachine) StateFn
