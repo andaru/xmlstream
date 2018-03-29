@@ -9,8 +9,7 @@ driven XML stream processors, such as
 [NETCONF](https://tools.ietf.org/html/rfc6241) stream processing.
 
 Schema are constructed as a tree of `*xmlstream.Node`, and a state
-machine `xmlstream.StateMachine` is provided.
-
-See godoc for API documentation and an example showing how a
-schema tree along with an XML decoder and the `StateMachine` combine
-to parse and validate NETCONF server sessions.
+machine `xmlstream.StateMachine` is provided. A parser object
+combining the XML decoder with traversal of the schema tree via the
+state machine is not included here, but can be found in a user
+package, <https://github.com/andaru/netconf/schema>.
