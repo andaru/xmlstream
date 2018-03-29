@@ -3,7 +3,7 @@
 # xmlstream #
 
 The `xmlstream` package provides Golang libraries for building event
-driven XML stream processors. Examples include
+driven XML stream processors, such as
 [XMPP](https://tools.ietf.org/html/rfc3920) and
 [NETCONF](https://tools.ietf.org/html/rfc6241) stream processing.
 
