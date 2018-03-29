@@ -1,4 +1,5 @@
-![travis-ci](https://travis-ci.org/andaru/xmlstream.svg?branch=master)
+[![travis-ci](https://travis-ci.org/andaru/xmlstream.svg?branch=master)](https://travis-ci.org/andaru/xmlstream)
+[![GoDoc](https://godoc.org/github.com/andaru/xmlstream?status.svg)](https://godoc.org/github.com/andaru/xmlstream)
 
 # xmlstream #
 
