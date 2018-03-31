@@ -3,8 +3,6 @@ package xmlstream
 import (
 	"encoding/xml"
 	"fmt"
-
-	"github.com/golang/glog"
 )
 
 const (
@@ -117,7 +115,18 @@ func (n *Node) InsertAfter(ref, child *Node) *Node {
 
 func (n *Node) Iter(fn NodeIterFn) (err error) {
 	for it := n.Child; it != nil; it = it.NextSib {
-		glog.V(1).Infof("ITER it=%#v", it)
+		if err = fn(it); err != nil {
+			break
+		}
+	}
+	return
+}
+
+func (n *Node) IterReverse(fn NodeIterFn) (err error) {
+	if n.Child == nil {
+		return
+	}
+	for it := n.Child.PrevSib; it.NextSib != nil; it = it.PrevSib {
 		if err = fn(it); err != nil {
 			break
 		}
