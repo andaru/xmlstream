@@ -1,10 +1,10 @@
 package xmlstream
 
 // NodeOption is a Node constructor option for setting schema options
-type NodeOption func(*nodeOptions)
+type NodeOption func(*Node)
 
-// NodeOptions is the inteface to options for a schema node
-type NodeOptions interface {
+// NodeParameters are the schema parameters for a node
+type NodeParameters interface {
 	MinOccurs() int
 	MaxOccurs() int
 }
@@ -12,16 +12,24 @@ type NodeOptions interface {
 // WithMaxOccurs sets the maximum number of times the node may be expressed in
 // input matching the schema. Use -1 for unlimited.
 func WithMaxOccurs(n int) NodeOption {
-	return func(o *nodeOptions) {
-		o.maxOccurs = n
+	return func(o *Node) {
+		o.Opt.maxOccurs = n
 	}
 }
 
 // WithMinOccurs sets the minimum number of times the node must be expressed in
 // input matching the schema. Use 0 to indicate the node is optional.
 func WithMinOccurs(n int) NodeOption {
-	return func(o *nodeOptions) {
-		o.minOccurs = n
+	return func(o *Node) {
+		o.Opt.minOccurs = n
+	}
+}
+
+// WithParent sets the node's parent at construction time. Note that
+// this may be over-written by any further mutations to the node.
+func WithParent(parent *Node) NodeOption {
+	return func(o *Node) {
+		o.Parent = parent
 	}
 }
 
@@ -46,5 +54,5 @@ func (o nodeOptions) MinOccurs() int { return o.minOccurs }
 func (o nodeOptions) MaxOccurs() int { return o.maxOccurs }
 
 // compile time interface validation
-var _ NodeOptions = nodeOptions{}
-var _ NodeOptions = &nodeOptions{}
+var _ NodeParameters = nodeOptions{}
+var _ NodeParameters = &nodeOptions{}

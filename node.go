@@ -71,7 +71,7 @@ func NewSchema(options ...NodeOption) *Node {
 	root := &Node{T: NodeTypeRoot}
 	root.PrevSib = root
 	for _, option := range options {
-		option(&opts)
+		option(root)
 		root.Opt = &opts
 	}
 	root.Append(ProcInstNode("xml", WithMinOccurs(0), WithMaxOccurs(1)))

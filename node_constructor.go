@@ -6,7 +6,7 @@ import "encoding/xml"
 func ElementNode(name xml.Name, opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeElement, Name: name, Opt: defaultNodeOptions(NodeTypeElement)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -17,7 +17,7 @@ func ProcInstNode(target string, opts ...NodeOption) *Node {
 	typ := NodeTypeProcInst
 	n := &Node{T: typ, Value: xml.ProcInst{Target: target}, Opt: defaultNodeOptions(typ)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -26,7 +26,7 @@ func ProcInstNode(target string, opts ...NodeOption) *Node {
 func TextNode(opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeText, Opt: defaultNodeOptions(NodeTypeText)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -35,7 +35,7 @@ func TextNode(opts ...NodeOption) *Node {
 func CallbackNode(name xml.Name, fn NodeTokenCallback, opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeCB, Name: name, Value: fn, Opt: defaultNodeOptions(NodeTypeCB)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -45,7 +45,7 @@ func CallbackNode(name xml.Name, fn NodeTokenCallback, opts ...NodeOption) *Node
 func StartElementEventNode(fn NodeTokenCallback, opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeCB, Name: CBTokenize, Value: fn, Opt: defaultNodeOptions(NodeTypeCB)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -55,7 +55,7 @@ func StartElementEventNode(fn NodeTokenCallback, opts ...NodeOption) *Node {
 func EndElementEventNode(fn NodeTokenCallback, opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeCB, Name: CBEndElement, Value: fn, Opt: defaultNodeOptions(NodeTypeCB)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
@@ -66,7 +66,7 @@ func EndElementEventNode(fn NodeTokenCallback, opts ...NodeOption) *Node {
 func HandoffEventNode(fn StateFn, opts ...NodeOption) *Node {
 	n := &Node{T: NodeTypeCB, Name: CBHandoff, Value: fn, Opt: defaultNodeOptions(NodeTypeCB)}
 	for _, opt := range opts {
-		opt(n.Opt)
+		opt(n)
 	}
 	return n
 }
