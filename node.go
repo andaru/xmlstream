@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	// XMLNS is the XML namespace of this package
 	XMLNS = "https://github.com/andaru/xmlstream"
 )
 
@@ -16,6 +17,8 @@ var (
 	CBTokenize = xml.Name{Space: XMLNS, Local: "callback-tokenize"}
 	// CBEndElement is the NodeTokenCallback called at element end.
 	CBEndElement = xml.Name{Space: XMLNS, Local: "callback-end-element"}
+	// CBHandoff denotes the node option which calls StateFn for handoff.
+	CBHandoff = xml.Name{Space: XMLNS, Local: "callback-handoff"}
 )
 
 // NodeTokenCallback is the prototype for schema attached callbacks

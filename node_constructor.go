@@ -59,3 +59,14 @@ func EndElementEventNode(fn NodeTokenCallback, opts ...NodeOption) *Node {
 	}
 	return n
 }
+
+// HandoffEventNode returns a StateFn callback node which will be
+// executed when it is found in a parent prior to the next XML token
+// being read.
+func HandoffEventNode(fn StateFn, opts ...NodeOption) *Node {
+	n := &Node{T: NodeTypeCB, Name: CBHandoff, Value: fn, Opt: defaultNodeOptions(NodeTypeCB)}
+	for _, opt := range opts {
+		opt(n.Opt)
+	}
+	return n
+}
