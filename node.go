@@ -1,6 +1,7 @@
 package xmlstream
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 )
@@ -11,16 +12,23 @@ const (
 )
 
 var (
-	// CBTokenize is the NodeTokenCallback called during tokenization.
+	// CBTokenize is the callback called during tokenization.
 	CBTokenize = xml.Name{Space: XMLNS, Local: "callback-tokenize"}
-	// CBEndElement is the NodeTokenCallback called at element end.
-	CBEndElement = xml.Name{Space: XMLNS, Local: "callback-end-element"}
+	// CBStartElement is the callback called during tokenization.
+	CBStartElement = xml.Name{Space: XMLNS, Local: "callback-se"}
+	// CBEndElement is the callback called at element end.
+	CBEndElement = xml.Name{Space: XMLNS, Local: "callback-ee"}
 	// CBHandoff denotes the node option which calls StateFn for handoff.
 	CBHandoff = xml.Name{Space: XMLNS, Local: "callback-handoff"}
+	// CBText denotes the callback called for chardata/text elements.
+	CBText = xml.Name{Space: XMLNS, Local: "callback-cd"}
+	// CBSEOccurs denotes the callback called for constraint counts
+	// when an element occurs.
+	CBSEOccurs = xml.Name{Space: XMLNS, Local: "callback-se:occurs"}
 )
 
 // NodeTokenCallback is the prototype for schema attached callbacks
-type NodeTokenCallback func(*Node, xml.Token)
+type NodeTokenCallback func(context.Context, *Node, xml.Token)
 
 // NodeIterFn is the prototype for node iterators
 type NodeIterFn func(*Node) error
@@ -41,9 +49,12 @@ type Node struct {
 	Parent, Child    *Node
 	NextSib, PrevSib *Node
 	Opt              *nodeOptions
+	Status           *nodeData
 	T                NodeType
 	Name             xml.Name
 	Value            interface{}
+
+	Validator NodeTokenCallback
 }
 
 func (t NodeType) Format(f fmt.State, _ rune) {

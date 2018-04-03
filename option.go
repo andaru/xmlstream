@@ -1,5 +1,11 @@
 package xmlstream
 
+import (
+	"context"
+	"encoding/xml"
+	"errors"
+)
+
 // NodeOption is a Node constructor option for setting schema options
 type NodeOption func(*Node)
 
@@ -10,11 +16,30 @@ type NodeParameters interface {
 }
 
 // WithMaxOccurs sets the maximum number of times the node may be expressed in
-// input matching the schema. Use -1 for unlimited.
+// input matching the schema. Use 0 for unlimited.
 func WithMaxOccurs(n int) NodeOption {
 	return func(o *Node) {
 		o.Opt.maxOccurs = n
+		if !hasCallbackChild(o, CBSEOccurs) {
+			o.Append(CallbackNode(CBSEOccurs, func(ctx context.Context, _ *Node, t xml.Token) {
+				o.Status.Occurs++
+				if se, ok := xml.CopyToken(t).(xml.StartElement); ok {
+					o.Status.SE = se
+				}
+			}))
+		}
 	}
+}
+
+func hasCallbackChild(n *Node, name xml.Name) (ok bool) {
+	n.Iter(func(it *Node) error {
+		if it.T != NodeTypeCB || name != it.Name {
+			return nil
+		}
+		ok = true
+		return errors.New("stop iteration")
+	})
+	return
 }
 
 // WithMinOccurs sets the minimum number of times the node must be expressed in
@@ -22,6 +47,20 @@ func WithMaxOccurs(n int) NodeOption {
 func WithMinOccurs(n int) NodeOption {
 	return func(o *Node) {
 		o.Opt.minOccurs = n
+		if !hasCallbackChild(o, CBSEOccurs) {
+			o.Append(CallbackNode(CBSEOccurs, func(ctx context.Context, _ *Node, t xml.Token) {
+				o.Status.Occurs++
+				if se, ok := xml.CopyToken(t).(xml.StartElement); ok {
+					o.Status.SE = se
+				}
+			}))
+		}
+	}
+}
+
+func WithValidator(validator NodeTokenCallback) NodeOption {
+	return func(o *Node) {
+		o.Validator = validator
 	}
 }
 
@@ -38,16 +77,13 @@ type nodeOptions struct {
 	maxOccurs int
 }
 
-func defaultNodeOptions(t NodeType) *nodeOptions {
-	commonNodeOptions := &nodeOptions{minOccurs: 0, maxOccurs: 1}
-	// customization is available per NodeType here
-	nodeTypeOptions := map[NodeType]*nodeOptions{
-		NodeTypeElement: &nodeOptions{minOccurs: 1, maxOccurs: 1},
-	}
-	if options, ok := nodeTypeOptions[t]; ok {
-		return options
-	}
-	return commonNodeOptions
+type nodeData struct {
+	Occurs int
+	SE     xml.StartElement
+}
+
+func defaultNodeOptions() *nodeOptions {
+	return &nodeOptions{minOccurs: -1, maxOccurs: -1}
 }
 
 func (o nodeOptions) MinOccurs() int { return o.minOccurs }
